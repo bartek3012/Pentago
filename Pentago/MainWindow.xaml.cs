@@ -24,6 +24,9 @@ namespace Pentago
         public MainWindow()
         {
             InitializeComponent();
+            menu = new Menu();
+            
+            MenuFrame.NavigationService.Navigate(menu);
             blackMovement = true;
             squareButon1 = new Button[9];
             squareButon1[0] = Button11; squareButon1[1] = Button12; squareButon1[2] = Button13; squareButon1[3] = Button14; squareButon1[4] = Button15;
@@ -53,6 +56,7 @@ namespace Pentago
         private Button[] squareButon4;
         private Button[] arrowsButton;
         private Board board;
+        private Menu menu;
         private void ButtonBall_Click(object sender, RoutedEventArgs e)
         {
             if(blackMovement) (sender as Button).Background = Brushes.Black;
