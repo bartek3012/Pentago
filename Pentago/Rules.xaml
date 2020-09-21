@@ -5,24 +5,24 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Pentago"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="263.567"
+      d:DesignHeight="459.6" d:DesignWidth="263.567"
       Title="Rules">
-    <StackPanel>
+    <StackPanel Margin="0,0,0.2,-27.8">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button Style="{StaticResource RoundButtonTemplate}" x:Name="BackButton" Grid.Column="0" Content="Back"  Margin="32,12,21,0" VerticalAlignment="Top" Height="36" Width="Auto" Click="BackButton_Click"/>
-            <Button x:Name="PolanFlagButton" Grid.Column="1" Style="{StaticResource FlagTemplate}">
+            <Button x:Name="PolanFlagButton" Grid.Column="1" Style="{StaticResource FlagTemplate}" Click="PolandFlagButton_Click">
                 <Image Source="/Image/PolandFlag.png"/>
             </Button>
-            <Button x:Name="UKFlagButton" Grid.Column="1" Style="{StaticResource FlagTemplate}">
+            <Button x:Name="UKFlagButton" Grid.Column="1" Style="{StaticResource FlagTemplate}" Click="UKFlagButton_Click">
                 <Image Source="/Image/UkFlag.png" Margin="7"/>
 
             </Button>
         </Grid>
-        <TextBlock x:Name="RulesTextBox" FontFamily="Impact" FontSize="15" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" Background="Transparent" Margin="10,0,10.2,10" Padding="5" Height="389"/>
+        <TextBlock x:Name="RulesTextBox" FontFamily="Impact" FontSize="15" TextWrapping="Wrap" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White" Background="Transparent" Margin="0,0,0,10" Height="425"/>
     </StackPanel>
 
 </Page>

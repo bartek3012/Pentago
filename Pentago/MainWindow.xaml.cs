@@ -25,9 +25,8 @@ namespace Pentago
         {
             InitializeComponent();
             menu = new Menu();
-            
+            play = new Play();
             MenuFrame.NavigationService.Navigate(menu);
-            blackMovement = true;
             squareButon1 = new Button[9];
             squareButon1[0] = Button11; squareButon1[1] = Button12; squareButon1[2] = Button13; squareButon1[3] = Button14; squareButon1[4] = Button15;
             squareButon1[5] = Button16; squareButon1[6] = Button17; squareButon1[7] = Button18; squareButon1[8] = Button19;
@@ -44,19 +43,19 @@ namespace Pentago
             arrowsButton[0] = ButtonArrow1P; arrowsButton[1] = ButtonArrow1N; arrowsButton[2] = ButtonArrow2P; arrowsButton[3] = ButtonArrow2N;
             arrowsButton[4] = ButtonArrow3P; arrowsButton[5] = ButtonArrow3N; arrowsButton[6] = ButtonArrow4P; arrowsButton[7] = ButtonArrow4N;
             board = new Board(squareButon1, squareButon2, squareButon3, squareButon4);
-            foreach (Button arrow in arrowsButton)
-            {
-                arrow.Visibility = Visibility.Hidden;
-            }
+            HideArrows();
+            board.IsEnabledFalse();
+            blackMovement = false;
         }
-            private bool blackMovement;
         private Button[] squareButon1;
         private Button[] squareButon2;
         private Button[] squareButon3;
         private Button[] squareButon4;
-        private Button[] arrowsButton;
-        private Board board;
-        private Menu menu;
+        private static Button[] arrowsButton;
+        public static Board board { get; private set; }
+        public static Menu menu { get; private set; }
+        public static Play play { get; private set; }
+        public static bool blackMovement { get; set; }
         private void ButtonBall_Click(object sender, RoutedEventArgs e)
         {
             if(blackMovement) (sender as Button).Background = Brushes.Black;
@@ -65,26 +64,32 @@ namespace Pentago
             board.IsEnabledFalse();
             if(!board.ShowWiner())
             { 
-            foreach (Button arrow in arrowsButton)
-            {
+                foreach (Button arrow in arrowsButton)
+                {
                 arrow.Visibility = Visibility.Visible;
-            }
+                }
             }
 
         }
 
         private void ButtonArrow_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Button arrow in arrowsButton)
-            {
-                arrow.Visibility = Visibility.Collapsed;
-            }
+            HideArrows();
             board.IsEnabledTrue();
             string nameButton = (sender as Button).Name;
             char direction = nameButton[12];
             char NumberSquare = nameButton[11];
             board.Rotation(direction, NumberSquare-49); //decrease number by 48 because of ASCI and decrese by 1 because of numeration from 0 in array
             board.ShowWiner();
+            play.ChangeMove();
+        }
+
+        public static void HideArrows()
+        {
+            foreach (Button arrow in arrowsButton)
+            {
+                arrow.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

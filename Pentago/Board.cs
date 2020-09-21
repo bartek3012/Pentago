@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace Pentago
 {
-    class Board
+   public class Board
     {
         private Button[][] squaresButton;
         private Button[] allSquares;
@@ -172,29 +172,44 @@ namespace Pentago
             bool blackWin = WinCheck(Brushes.Black);
             if(whiteWin == true && blackWin == true)
             {
-                MessageBox.Show("Draw!");
+                MainWindow.play.ShowWiner("Draw!");
                 IsEnabledFalse();
                 return true;
             }
             else if(whiteWin)
             {
-                MessageBox.Show("White won!");
+                MainWindow.play.ShowWiner("White won!");
                 IsEnabledFalse();
                 return true;
             }
             else if (blackWin)
             {
-                MessageBox.Show("Black won!");
+                MainWindow.play.ShowWiner("Black won!");
                 IsEnabledFalse();
                 return true;
             }
             else if(FullBoard())
             {
-                MessageBox.Show("Draw!");
+                MainWindow.play.ShowWiner("Draw!");
                 IsEnabledFalse();
                 return true;
             }
             return false;
+        }
+
+        public void RestartGame(bool regame)
+        {
+           MainWindow.blackMovement = false;
+            foreach(Button ball in allSquares)
+            {
+                ball.Background = Brushes.Transparent;
+            }
+            MainWindow.HideArrows();
+            if (regame)
+            {
+                IsEnabledTrue();
+            }
+            else IsEnabledFalse(); 
         }
     }
 }

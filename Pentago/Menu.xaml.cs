@@ -30,14 +30,25 @@ namespace Pentago
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void RulesButton_Click(object sender, RoutedEventArgs e)
         {
-           NavigationService.Navigate(new Rules(this));
+           NavigationService.Navigate(new Rules());
         }
 
-        public void Button_Click_2(object sender, RoutedEventArgs e)
+        public void SimglePlayerButton_Click(object sender, RoutedEventArgs e)
         {
+            NavigationService.Navigate(MainWindow.play);
+            MainWindow.board.IsEnabledTrue();
+        }
 
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
+        }
+
+        private void MultiplayerButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(MainWindow.play);
         }
     }
 }
