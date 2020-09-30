@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Windows.Threading;
 
 namespace Pentago
 {
@@ -75,13 +76,25 @@ namespace Pentago
         private void ButtonArrow_Click(object sender, RoutedEventArgs e)
         {
             HideArrows();
+            play.ChangeMove();
             board.IsEnabledTrue();
             string nameButton = (sender as Button).Name;
             char direction = nameButton[12];
             char NumberSquare = nameButton[11];
-            board.Rotation(direction, NumberSquare-49); //decrease number by 48 because of ASCI and decrese by 1 because of numeration from 0 in array
+            board.Rotation(direction, NumberSquare - 49); //decrease number by 48 because of ASCI and decrese by 1 because of numeration from 0 in array
             board.ShowWiner();
-            play.ChangeMove();
+             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));           
+            if (menu.withComputer == true)
+            {
+
+                board.IsEnabledFalse();
+                blackMovement = !blackMovement;
+                board.ComputerMoveBalls();
+                board.ComputerMoveArrows();
+                board.IfWinWhite();
+   //             board.ShowWiner();
+   //             play.ChangeMove();
+            }
         }
 
         public static void HideArrows()
@@ -90,6 +103,15 @@ namespace Pentago
             {
                 arrow.Visibility = Visibility.Collapsed;
             }
+        }
+
+        public static void FlashingArrow(int number)
+        {   
+            //arrowsButton[number].Visibility = Visibility.Visible;
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+           // Thread.Sleep(1000);
+           // arrowsButton[number].Visibility = Visibility.Collapsed;
+           // Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
         }
     }
 }

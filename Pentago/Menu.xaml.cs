@@ -23,7 +23,9 @@ namespace Pentago
         public Menu()
         {
             InitializeComponent();
+            withComputer = false;
         }
+        public bool withComputer { get; set; }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -35,20 +37,19 @@ namespace Pentago
            NavigationService.Navigate(new Rules());
         }
 
-        public void SimglePlayerButton_Click(object sender, RoutedEventArgs e)
+        public void PlayerButton_Click(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(MainWindow.play);
             MainWindow.board.IsEnabledTrue();
+            if((sender as Button).Content.ToString() == "Single player")
+            {
+                withComputer = true;
+            }
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
-        }
-
-        private void MultiplayerButton_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationService.Navigate(MainWindow.play);
         }
     }
 }

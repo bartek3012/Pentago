@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,19 +11,22 @@ using System.Windows.Media;
 
 namespace Pentago
 {
-   public class Board
+    public class Board
     {
         private Button[][] squaresButton;
         private Button[] allSquares;
+        private Button blackMoveButton;
+        private int []blackMoveRotation;
         static int SizeOfSquare = 9;
         public Board(Button[] squareButton1, Button[] squareButton2, Button[] squareButton3, Button[] squareButton4)
         {
-
             squaresButton = new Button[4][];
             squaresButton[0] = squareButton1;
             squaresButton[1] = squareButton2;
             squaresButton[2] = squareButton3;
             squaresButton[3] = squareButton4;
+            blackMoveButton = new Button();
+            blackMoveRotation = new int[2];
             allSquares = new Button[SizeOfSquare * 4];
             for (int k = 0; k < 2; k++)
             {
@@ -29,11 +34,11 @@ namespace Pentago
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        allSquares[i + (j * 6) + (18 * k)] = squaresButton[2*k][i + (j * 3)];
+                        allSquares[i + (j * 6) + (18 * k)] = squaresButton[2 * k][i + (j * 3)];
                     }
                     for (int i = 0; i < 3; i++)
                     {
-                        allSquares[i + 3 + (j * 6) + (18 * k)] = squaresButton[2*k+1][i + (j * 3)];
+                        allSquares[i + 3 + (j * 6) + (18 * k)] = squaresButton[2 * k + 1][i + (j * 3)];
 
                     }
                 }
@@ -42,9 +47,9 @@ namespace Pentago
         public void IsEnabledFalse()
         {
 
-            foreach(Button[] squares in squaresButton)
+            foreach (Button[] squares in squaresButton)
             {
-                foreach(Button ball in squares)
+                foreach (Button ball in squares)
                 {
                     ball.IsEnabled = false;
                 }
@@ -69,17 +74,17 @@ namespace Pentago
             {
                 copySquare[i] = squaresButton[square][i].Background;
             }
-            
+
             int index = 0;
-            if(direction == 'N') //'N' is oposit direction to clock move
-            {            
-                for(int j=0; j<3; j++)
-            { 
-                for(int i=6; i>=0; i-=3)
+            if (direction == 'N') //'N' is oposit direction to clock move
+            {
+                for (int j = 0; j < 3; j++)
                 {
-                squaresButton[square][i+j].Background = copySquare[index++];
+                    for (int i = 6; i >= 0; i -= 3)
+                    {
+                        squaresButton[square][i + j].Background = copySquare[index++];
+                    }
                 }
-            }
 
             }
             else { //direction like clock move
@@ -87,7 +92,7 @@ namespace Pentago
                 {
                     for (int i = 6; i >= 0; i -= 3)
                     {
-                        squaresButton[square][index++].Background = copySquare[j+i];
+                        squaresButton[square][index++].Background = copySquare[j + i];
                     }
                 }
             }
@@ -111,26 +116,26 @@ namespace Pentago
                     else ballsInLine = 0;
                 }
             }
-                for (int i = 0; i <= 6; i++) //move about 6 balls, because we move by all line
+            for (int i = 0; i < 6; i++) //move about 6 balls, because we move by all line
+            {
+                for (int j = 0; j <= 6; j += 6) //we can make 5 ball in line whan we will start from first or second ball
                 {
-                    for (int j = 0; j <= 6; j+=6) //we can make 5 ball in line whan we will start from first or second ball
+                    for (int k = 0; k <= 24; k += 6) //if all 5 ball have wanted color
                     {
-                        for (int k = 0; k <= 24; k+=6) //if all 5 ball have wanted color
+                        if (allSquares[i + j + k].Background == color)
                         {
-                            if (allSquares[i + j + k].Background == color)
-                            {
-                                ballsInLine++;
-                            }
-                            else break;
+                            ballsInLine++;
                         }
-                        if (ballsInLine == 5) return true;
-                        else ballsInLine = 0;
+                        else break;
                     }
+                    if (ballsInLine == 5) return true;
+                    else ballsInLine = 0;
                 }
-            for(int i=0; i<8; i++)
+            }
+            for (int i = 0; i < 8; i++)
             {
                 if (i == 2) i = 6;
-                for(int j=0; j<=28; j+=7)
+                for (int j = 0; j <= 28; j += 7)
                 {
                     if (allSquares[i + j].Background == color)
                     {
@@ -141,7 +146,7 @@ namespace Pentago
                 if (ballsInLine == 5) return true;
                 else ballsInLine = 0;
             }
-            for (int i = 4; i <=11; i++)
+            for (int i = 4; i <= 11; i++)
             {
                 if (i == 6) i = 10;
                 for (int j = 0; j <= 24; j += 5)
@@ -159,7 +164,7 @@ namespace Pentago
         }
         public bool FullBoard()
         {
-            foreach(Button ball in allSquares)
+            foreach (Button ball in allSquares)
             {
                 if (ball.Background == Brushes.Transparent) return false;
             }
@@ -170,13 +175,13 @@ namespace Pentago
         {
             bool whiteWin = WinCheck(Brushes.White);
             bool blackWin = WinCheck(Brushes.Black);
-            if(whiteWin == true && blackWin == true)
+            if (whiteWin == true && blackWin == true)
             {
                 MainWindow.play.ShowWiner("Draw!");
                 IsEnabledFalse();
                 return true;
             }
-            else if(whiteWin)
+            else if (whiteWin)
             {
                 MainWindow.play.ShowWiner("White won!");
                 IsEnabledFalse();
@@ -188,7 +193,7 @@ namespace Pentago
                 IsEnabledFalse();
                 return true;
             }
-            else if(FullBoard())
+            else if (FullBoard())
             {
                 MainWindow.play.ShowWiner("Draw!");
                 IsEnabledFalse();
@@ -199,8 +204,8 @@ namespace Pentago
 
         public void RestartGame(bool regame)
         {
-           MainWindow.blackMovement = false;
-            foreach(Button ball in allSquares)
+            MainWindow.blackMovement = false;
+            foreach (Button ball in allSquares)
             {
                 ball.Background = Brushes.Transparent;
             }
@@ -209,7 +214,168 @@ namespace Pentago
             {
                 IsEnabledTrue();
             }
-            else IsEnabledFalse(); 
+            else IsEnabledFalse();
+        }
+
+        public void ComputerMoveBalls()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if(squaresButton[i][4].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][4].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][4];
+                    return;
+                }
+            }
+            Random random = new Random();
+            while(true)
+            { 
+                int number = random.Next(36);
+                if(allSquares[number].Background == Brushes.Transparent)
+                {
+                    allSquares[number].Background = Brushes.Black;
+                    blackMoveButton = allSquares[number];
+                    break;
+                }
+            }
+            //ComputerMoveArrows();
+        }
+
+        public void ComputerMoveArrows()
+        {
+            if (IfWinBlack() == true) return;
+            Random random = new Random();
+            int direction = random.Next(2);
+            int square = random.Next(4);
+            blackMoveRotation[0] = direction;
+            blackMoveRotation[1] =  square;
+            if (direction == 0) Rotation('N', square);
+            else Rotation('P', square);
+            IsEnabledTrue();
+        }
+
+        public void IfWinWhite()
+        {
+            blackMoveButton.Background = Brushes.Transparent;
+            if(blackMoveRotation[0] == 0)
+            {
+                Rotation('P', blackMoveRotation[1]);
+            }
+            else
+            {
+                Rotation('N', blackMoveRotation[1]);
+            }
+            bool notWin;
+            foreach (Button Blackball in allSquares)
+            {
+                if(Blackball.Background == Brushes.Transparent)
+                {
+                    Blackball.Background = Brushes.Black;
+                    for (int j = 0; j < 4; j++)
+                    {
+                        notWin = true;
+                        for (int k = 0; k < 2; k++)
+                        {
+                            if (k == 0)
+                            {
+                                Rotation('P', j);
+                            }
+                            else
+                            {
+                                Rotation('N', j);
+                                Rotation('N', j);
+                            }
+                            foreach (Button Whiteball in allSquares)
+                            {
+                                if (Whiteball.Background == Brushes.Transparent)
+                                {
+                                    Whiteball.Background = Brushes.White;
+                                    for (int i = 0; i < 4; i++)
+                                    {
+                                        Rotation('N', i);
+                                        if (WinCheck(Brushes.White))
+                                        {
+                                            notWin = false;
+                                            Rotation('P', i);
+                                        }
+                                        else
+                                        {
+                                            Rotation('P', i);
+                                            Rotation('P', i);
+                                            if (WinCheck(Brushes.White))
+                                            {
+                                                notWin = false;
+                                            }
+                                            Rotation('N', i);
+                                        }
+                                    }
+                                    Whiteball.Background = Brushes.Transparent;
+                                }
+                            }
+                            if (notWin == true)
+                            {
+                                return;
+                            }    
+                            if (k == 1)
+                            {
+                                Rotation('P', j);
+                            }
+
+                        }
+                    }
+                    Blackball.Background = Brushes.Transparent;
+                }
+            }
+        }
+        public bool IfWinBlack()
+        {
+            foreach (Button ball in allSquares)
+            {
+                if (ball.Background == Brushes.Transparent)
+                {
+                    ball.Background = Brushes.Black;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Rotation('N', i);
+                        if (WinCheck(Brushes.Black))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            Rotation('P', i);
+                            Rotation('P', i);
+                            if (WinCheck(Brushes.Black))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                Rotation('N', i);
+                                
+                            }
+                        }
+                    }
+                    ball.Background = Brushes.Transparent;
+                }
+            }
+            return false;
+        }
+        public bool ThreeInLine(Brush ColorInLine, Button placed)
+        {
+            for(int i=0; i<4; i++)
+            {
+                for(int j=0; j<=6; j+=3)
+                { 
+                    if(squaresButton[i][j+1].Background == ColorInLine && (squaresButton[i][j].Background == ColorInLine && squaresButton[i][j+2].Background == Brushes.Transparent)||
+                        (squaresButton[i][j+2].Background == ColorInLine && squaresButton[i][j].Background == Brushes.Transparent))
+                    {
+                        return true;///ROZBIĆ NA DWA IFY W CELU DOSTANIE PLACED
+                    }
+                }
+            }
+            return false;
         }
     }
 }

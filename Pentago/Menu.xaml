@@ -10,8 +10,8 @@
 
     <Grid Background="Transparent">
         <StackPanel>
-            <Button Style="{StaticResource RoundButtonTemplate}" Content="Single player" Margin="0 55 0 12" Click="SimglePlayerButton_Click"/>
-            <Button Style="{StaticResource RoundButtonTemplate}" Content="Multiplayer"  Margin="12" Click="MultiplayerButton_Click"/>
+            <Button Style="{StaticResource RoundButtonTemplate}" Content="Single player" Margin="0 55 0 12" Click="PlayerButton_Click"/>
+            <Button Style="{StaticResource RoundButtonTemplate}" Content="Multiplayer"  Margin="12" Click="PlayerButton_Click"/>
             <Button Style="{StaticResource RoundButtonTemplate}" Content="Rules"  Margin="12" Click="RulesButton_Click"/>
             <Button Style="{StaticResource RoundButtonTemplate}" Content="Exit"  Margin="12" Click="Exit_Click"/>
         </StackPanel>

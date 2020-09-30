@@ -54,9 +54,9 @@ namespace Pentago
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.board.RestartGame(true);
+            MoveButton.Visibility = Visibility.Visible;
             MoveButton.Background = Brushes.White;
             RurnTextBlock.Text = "Move of";
-            //ChanfeColor("asas");
         }
 
         public void ShowWiner(string winner)
