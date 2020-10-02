@@ -219,6 +219,10 @@ namespace Pentago
 
         public void ComputerMoveBalls()
         {
+            if(ThreeInLine(Brushes.White))
+            {
+                return;
+            }
             for (int i = 0; i < 4; i++)
             {
                 if(squaresButton[i][4].Background == Brushes.Transparent)
@@ -244,7 +248,7 @@ namespace Pentago
 
         public void ComputerMoveArrows()
         {
-            if (IfWinBlack() == true) return;
+
             Random random = new Random();
             int direction = random.Next(2);
             int square = random.Next(4);
@@ -255,8 +259,49 @@ namespace Pentago
             IsEnabledTrue();
         }
 
+        private bool WinWhiteCheck()
+        {
+            foreach (Button ball in allSquares)
+            {
+                if (ball.Background == Brushes.Transparent)
+                {
+                    ball.Background = Brushes.White;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Rotation('N', i);
+                        if (WinCheck(Brushes.White))
+                        {
+                            Rotation('P', i);
+                            ball.Background = Brushes.Transparent;
+                            return true;
+                        }
+                        else
+                        {
+                            Rotation('P', i);
+                            Rotation('P', i);
+                            if (WinCheck(Brushes.Black))
+                            {
+                                Rotation('N', i);
+                                ball.Background = Brushes.Transparent;
+                                return true;
+                            }
+                            else
+                            {
+                                Rotation('N', i);
+
+                            }
+                        }
+                    }
+                    ball.Background = Brushes.Transparent;
+                }
+            }
+            return false;
+        }
+
         public void IfWinWhite()
         {
+
+            if (WinWhiteCheck() == false) return;
             blackMoveButton.Background = Brushes.Transparent;
             if(blackMoveRotation[0] == 0)
             {
@@ -327,6 +372,8 @@ namespace Pentago
                     Blackball.Background = Brushes.Transparent;
                 }
             }
+            blackMoveButton.Background = Brushes.Black;
+            Rotation('P', 2);
         }
         public bool IfWinBlack()
         {
@@ -362,18 +409,130 @@ namespace Pentago
             }
             return false;
         }
-        public bool ThreeInLine(Brush ColorInLine, Button placed)
+
+        public void ComputerMove()
         {
-            for(int i=0; i<4; i++)
+            IsEnabledFalse();
+            MainWindow.blackMovement = !MainWindow.blackMovement;
+            if(!IfWinBlack())
+            { 
+            ComputerMoveBalls();
+            ComputerMoveArrows();
+            IfWinWhite();
+            }
+            ShowWiner();
+            MainWindow.play.ChangeMove();
+        }
+        public bool ThreeInLine(Brush ColorInLine)
+        {
+            for (int i = 0; i < 4; i++)
             {
-                for(int j=0; j<=6; j+=3)
-                { 
-                    if(squaresButton[i][j+1].Background == ColorInLine && (squaresButton[i][j].Background == ColorInLine && squaresButton[i][j+2].Background == Brushes.Transparent)||
-                        (squaresButton[i][j+2].Background == ColorInLine && squaresButton[i][j].Background == Brushes.Transparent))
+                for (int j = 0; j <= 6; j += 3)
+                {
+                    if (squaresButton[i][j + 1].Background == ColorInLine && squaresButton[i][j].Background == ColorInLine && squaresButton[i][j + 2].Background == Brushes.Transparent)
                     {
-                        return true;///ROZBIĆ NA DWA IFY W CELU DOSTANIE PLACED
+                        squaresButton[i][j + 2].Background = Brushes.Black;
+                        blackMoveButton = squaresButton[i][j + 2];
+                        return true;
+                    }
+                    if (squaresButton[i][j + 2].Background == ColorInLine && squaresButton[i][j].Background == Brushes.Transparent && squaresButton[i][j + 1].Background == ColorInLine)
+                    {
+                        squaresButton[i][j].Background = Brushes.Black;
+                        blackMoveButton = squaresButton[i][j];
+                        return true;
                     }
                 }
+                for (int j = 0; j < 3; j++)
+                {
+                    if (squaresButton[i][j + 3].Background == ColorInLine && squaresButton[i][j].Background == ColorInLine && squaresButton[i][j + 6].Background == Brushes.Transparent)
+                    {
+                        squaresButton[i][j + 6].Background = Brushes.Black;
+                        blackMoveButton = squaresButton[i][j + 6];
+                        return true;
+
+                    }
+                    if (squaresButton[i][j + 3].Background == ColorInLine && squaresButton[i][j + 6].Background == ColorInLine && squaresButton[i][j].Background == Brushes.Transparent)
+                    {
+                        squaresButton[i][j].Background = Brushes.Black;
+                        blackMoveButton = squaresButton[i][j];
+                        return true;
+
+                    }
+                }
+                if (squaresButton[i][0].Background == ColorInLine && squaresButton[i][4].Background == ColorInLine && squaresButton[i][8].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][8].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][8];
+                    return true;
+                }
+                if (squaresButton[i][8].Background == ColorInLine && squaresButton[i][4].Background == ColorInLine && squaresButton[i][0].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][0].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][0];
+                    return true;
+                }
+                if (squaresButton[i][2].Background == ColorInLine && squaresButton[i][4].Background == ColorInLine && squaresButton[i][6].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][6].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][6];
+                    return true;
+                }
+                if (squaresButton[i][6].Background == ColorInLine && squaresButton[i][4].Background == ColorInLine && squaresButton[i][2].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][2].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][2];
+                    return true;
+                }
+                if (squaresButton[i][1].Background == ColorInLine && squaresButton[i][3].Background == ColorInLine && squaresButton[i][5].Background == Brushes.Transparent && squaresButton[i][7].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][5].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][5];
+                    return true;
+                }
+                if (squaresButton[i][1].Background == ColorInLine && squaresButton[i][5].Background == ColorInLine && squaresButton[i][3].Background == Brushes.Transparent && squaresButton[i][7].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][5].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][5];
+                    return true;
+                }
+                if (squaresButton[i][5].Background == ColorInLine && squaresButton[i][7].Background == ColorInLine && squaresButton[i][1].Background == Brushes.Transparent && squaresButton[i][3].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][1].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][1];
+                    return true;
+                }
+                if (squaresButton[i][3].Background == ColorInLine && squaresButton[i][7].Background == ColorInLine && squaresButton[i][1].Background == Brushes.Transparent && squaresButton[i][5].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][5].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][5];
+                    return true;
+                }
+                ///
+                if (squaresButton[i][1].Background == ColorInLine && squaresButton[i][5].Background == ColorInLine && squaresButton[i][2].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][2].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][2];
+                    return true;
+                }
+                if (squaresButton[i][1].Background == ColorInLine && squaresButton[i][3].Background == ColorInLine && squaresButton[i][0].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][0].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][0];
+                    return true;
+                }
+                if (squaresButton[i][3].Background == ColorInLine && squaresButton[i][7].Background == ColorInLine && squaresButton[i][6].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][6].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][6];
+                    return true;
+                }
+                if (squaresButton[i][7].Background == ColorInLine && squaresButton[i][5].Background == ColorInLine && squaresButton[i][8].Background == Brushes.Transparent)
+                {
+                    squaresButton[i][8].Background = Brushes.Black;
+                    blackMoveButton = squaresButton[i][8];
+                    return true;
+                }
+
             }
             return false;
         }
